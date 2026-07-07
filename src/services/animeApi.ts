@@ -4,6 +4,11 @@ import type {
   AnimeGenresResponse,
   PaginatedResponse,
 } from "../types/anime";
+import {
+  defaultAnimeTypeOptions,
+  type AnimeTypeOption,
+  type AnimeTypeValue,
+} from "../types/animeTypes";
 import type { Episode, EpisodeDetail, StreamingLink } from "../types/episode";
 import type { VideoData } from "../types/video";
 
@@ -90,6 +95,23 @@ export async function getAnimeGenres(): Promise<AnimeGenresResponse["data"]> {
     api.get<AnimeGenresResponse>("/genres/anime"),
   );
   return response.data.data;
+}
+
+export async function getAnimeTypes(): Promise<AnimeTypeOption[]> {
+  try {
+    const response = await requestWithRetry(() =>
+      api.get<{ data: Array<{ type: AnimeTypeValue }> }>("/meta/anime/types"),
+    );
+
+    const fetchedTypes = (response.data.data ?? []).map((item) => ({
+      value: item.type,
+      label: item.type.toUpperCase(),
+    }));
+
+    return fetchedTypes.length > 0 ? fetchedTypes : defaultAnimeTypeOptions;
+  } catch (error) {
+    return defaultAnimeTypeOptions;
+  }
 }
 
 export async function getTopAnime(
