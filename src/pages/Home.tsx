@@ -8,6 +8,7 @@ import {
 import AnimeGrid from "../components/AnimeGrid/AnimeGrid";
 import Pagination from "../components/Pagination/Pagination";
 import HeroCarousel from "../components/HeroCarousel/HeroCarousel";
+import FilterBar from "../components/FilterBar/FilterBar";
 import { useSearch } from "../context/SearchContext";
 import "../styles/HeroCarousel.css";
 
@@ -90,6 +91,7 @@ const Home = () => {
 
       {!loading && !error && (
         <>
+          <FilterBar />
           <AnimeGrid anime={anime} />
 
           <Pagination

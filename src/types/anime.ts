@@ -14,6 +14,10 @@ export interface AnimeGenre {
   name: string;
 }
 
+export interface AnimeGenresResponse {
+  data: AnimeGenre[];
+}
+
 export interface AnimeStudio {
   mal_id: number;
   name: string;

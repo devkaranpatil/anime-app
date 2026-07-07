@@ -1,5 +1,9 @@
 import axios, { type AxiosError } from "axios";
-import type { Anime, PaginatedResponse } from "../types/anime";
+import type {
+  Anime,
+  AnimeGenresResponse,
+  PaginatedResponse,
+} from "../types/anime";
 import type { Episode, EpisodeDetail, StreamingLink } from "../types/episode";
 import type { VideoData } from "../types/video";
 
@@ -79,6 +83,13 @@ export function getApiErrorMessage(error: unknown): string {
   }
 
   return "Something went wrong";
+}
+
+export async function getAnimeGenres(): Promise<AnimeGenresResponse["data"]> {
+  const response = await requestWithRetry(() =>
+    api.get<AnimeGenresResponse>("/genres/anime"),
+  );
+  return response.data.data;
 }
 
 export async function getTopAnime(
