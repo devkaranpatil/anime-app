@@ -1,0 +1,198 @@
+.streaming-services-section {
+  margin-top: 40px;
+}
+
+.streaming-services-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.streaming-services-header h2 {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* ==========================
+   SLIDER
+========================== */
+
+.streaming-slider {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ==========================
+   ARROWS
+========================== */
+
+.streaming-nav-btn {
+  width: 46px;
+  height: 46px;
+
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #252525;
+  color: white;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  transition: 0.25s;
+}
+
+.streaming-nav-btn:hover:not(:disabled) {
+  background: #ff1464;
+}
+
+.streaming-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ==========================
+   ROW
+========================== */
+
+.streaming-services-row {
+  flex: 1;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 18px;
+}
+
+/* ==========================
+   CARD
+========================== */
+
+.streaming-service-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  padding: 20px;
+
+  min-height: 110px;
+
+  background: #242424;
+
+  border: 1px solid #353535;
+  border-radius: 14px;
+
+  color: white;
+  text-decoration: none;
+
+  transition: 0.25s;
+}
+
+.streaming-service-card:hover {
+  border-color: #ff1464;
+  transform: translateY(-4px);
+}
+
+/* ==========================
+   ICON
+========================== */
+
+.streaming-service-icon {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background: #181818;
+}
+
+.streaming-service-icon img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.streaming-service-icon span {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* ==========================
+   TEXT
+========================== */
+
+.streaming-service-content {
+  min-width: 0;
+}
+
+.streaming-service-content h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.streaming-service-content p {
+  margin-top: 8px;
+
+  color: #9b9b9b;
+  font-size: 0.95rem;
+}
+
+/* ==========================
+   TABLET
+========================== */
+
+@media (max-width: 992px) {
+  .streaming-services-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width: 768px) {
+  .streaming-slider {
+    gap: 10px;
+  }
+
+  .streaming-services-row {
+    grid-template-columns: 1fr;
+  }
+
+  .streaming-service-card {
+    min-height: 90px;
+    padding: 16px;
+  }
+
+  .streaming-service-icon {
+    width: 54px;
+    height: 54px;
+  }
+
+  .streaming-service-icon img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .streaming-service-content h3 {
+    font-size: 1rem;
+  }
+}

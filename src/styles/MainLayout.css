@@ -1,0 +1,164 @@
+/* =========================
+   APP
+========================= */
+
+body {
+  margin: 0;
+  background: #171717;
+  font-family: "Poppins", sans-serif;
+  color: white;
+}
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  width: min(96%, 1500px);
+  margin: auto;
+  padding-bottom: 0px;
+}
+/* =========================
+   HEADER
+========================= */
+
+.app-header {
+  width: 100%;
+  background: #171717;
+  padding: 20px 0;
+}
+
+.app-nav {
+  width: min(96%, 1500px);
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+/* =========================
+   LOGO
+========================= */
+
+.app-brand {
+  text-decoration: none;
+  color: #ff1464;
+  font-size: 2rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.app-brand-mark {
+  display: none;
+}
+
+/* =========================
+   NAV LINKS
+========================= */
+
+.app-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.app-nav-link {
+  text-decoration: none;
+  color: #9b9b9b;
+  font-size: 14px;
+  transition: 0.25s;
+}
+
+.app-nav-link:hover,
+.app-nav-link.active {
+  color: white;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.nav-search {
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+}
+
+.nav-search input {
+  width: 420px;
+  height: 40px;
+
+  background: #222;
+  border: none;
+  outline: none;
+
+  color: white;
+
+  padding: 0 16px;
+
+  border-radius: 4px;
+}
+
+.nav-search input::placeholder {
+  color: #666;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.nav-auth {
+  margin-left: auto;
+
+  color: #bfbfbf;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.nav-auth:hover {
+  color: white;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.app-main {
+  width: min(96%, 1500px);
+  margin: auto;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 1000px) {
+  .app-nav {
+    flex-wrap: wrap;
+  }
+
+  .nav-search {
+    order: 3;
+    width: 100%;
+  }
+
+  .nav-search input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-nav-links {
+    display: none;
+  }
+
+  .app-brand {
+    font-size: 1.6rem;
+  }
+}

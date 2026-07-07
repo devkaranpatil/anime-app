@@ -1,0 +1,264 @@
+/* ===========================
+   Pagination Container
+=========================== */
+
+.pagination {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto 1fr;
+  align-items: start;
+  gap: 1rem;
+
+  margin-top: 2rem;
+  margin-bottom: 0;
+  padding: 1.25rem 1.5rem;
+
+  backdrop-filter: blur(14px);
+}
+
+/* ===========================
+   Go To Page
+=========================== */
+
+.pagination-go {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pagination-go label {
+  color: #d6d6d6;
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pagination-go input {
+  width: 80px;
+  height: 42px;
+
+  border: 1px solid #343444;
+  border-radius: 10px;
+
+  background: #1d1d1d;
+  color: white;
+
+  text-align: center;
+  font-size: 0.95rem;
+
+  transition: all 0.25s ease;
+}
+
+.pagination-go input:focus {
+  outline: none;
+  border-color: #ff1464;
+  box-shadow: 0 0 0 3px rgba(255, 20, 100, 0.18);
+}
+
+.pagination-go input::-webkit-inner-spin-button,
+.pagination-go input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ===========================
+   Pagination Buttons
+=========================== */
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pagination-pages button,
+.pagination-arrow {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #252530;
+  color: #f4f4f4;
+
+  cursor: pointer;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  transition: all 0.25s ease;
+}
+
+.pagination-pages button:hover,
+.pagination-arrow:hover:not(:disabled) {
+  background: #ff1464;
+  transform: translateY(-2px);
+}
+
+.pagination-pages button.active {
+  background: linear-gradient(135deg, #ff78a5, #ff1464);
+  color: white;
+  box-shadow: 0 6px 18px rgba(255, 20, 100, 0.35);
+}
+
+.pagination-arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pagination-dots {
+  color: #9ca3af;
+  font-size: 1.2rem;
+  padding: 0 0.25rem;
+}
+
+/* ===========================
+   Limit Selector
+=========================== */
+
+.pagination-limit {
+  justify-self: end;
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pagination-limit label,
+.pagination-limit span {
+  color: #d6d6d6;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.pagination-limit select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  height: 42px;
+  min-width: 90px;
+
+  padding: 0 2rem 0 1rem;
+
+  border: 1px solid #343444;
+  border-radius: 10px;
+
+  background: #1d1d1d;
+  color: white;
+
+  font-size: 0.95rem;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #ff1464 50%),
+    linear-gradient(135deg, #ff1464 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) center,
+    calc(100% - 12px) center;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.pagination-limit select:hover {
+  border-color: #ff1464;
+}
+
+.pagination-limit select:focus {
+  outline: none;
+  border-color: #ff1464;
+  box-shadow: 0 0 0 3px rgba(255, 20, 100, 0.18);
+}
+
+/* ===========================
+   Pagination Error
+=========================== */
+
+.pagination-error {
+  width: 100%;
+
+  margin-top: 0.35rem;
+  padding: 0.65rem 0.85rem;
+
+  border-left: 4px solid #ef4444;
+  border-radius: 8px;
+
+  background: rgba(239, 68, 68, 0.08);
+
+  color: #fca5a5;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  animation: fadeInError 0.2s ease;
+}
+
+@keyframes fadeInError {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 900px) {
+  .pagination {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .pagination-go,
+  .pagination-limit,
+  .pagination-pages {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pagination-error {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 600px) {
+  .pagination-pages {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination-pages button,
+  .pagination-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 0.9rem;
+  }
+
+  .pagination-go,
+  .pagination-limit {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination-go label,
+  .pagination-limit label,
+  .pagination-limit span {
+    width: 100%;
+    text-align: center;
+  }
+
+  .pagination-go input,
+  .pagination-limit select {
+    width: 90px;
+  }
+}
