@@ -1,99 +1,45 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import "../../styles/CustomDropdown.css";
 
-export type DropdownOption<T extends string | number> = {
-  value: T;
+export type DropdownOption = {
+  value: string | number;
   label: string;
 };
 
-interface CustomDropdownProps<T extends string | number> {
-  options: DropdownOption<T>[];
-  value?: T | T[] | null;
-  onChange: (value: T | T[] | null) => void;
+interface CustomDropdownProps {
+  options: DropdownOption[];
+  selectedValues: Array<string | number>;
+  onChange: (value: Array<string | number>) => void;
   placeholder?: string;
-  multiple?: boolean;
   disabled?: boolean;
   emptyMessage?: string;
-  className?: string;
 }
 
-const CustomDropdown = <T extends string | number>({
+const CustomDropdown = ({
   options,
-  value,
+  selectedValues,
   onChange,
   placeholder = "Select an option",
-  multiple = false,
   disabled = false,
   emptyMessage = "No options available.",
-  className = "",
-}: CustomDropdownProps<T>) => {
+}: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
+  const labels = options
+    .filter((option) => selectedValues.includes(option.value))
+    .map((option) => option.label);
+  const buttonText = labels.length > 0 ? labels.join(", ") : placeholder;
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const selectedLabels = useMemo(() => {
-    if (multiple && Array.isArray(value)) {
-      return options
-        .filter((option) => value.includes(option.value))
-        .map((option) => option.label);
+  const handleOptionClick = (value: string | number) => {
+    if (selectedValues.includes(value)) {
+      onChange(selectedValues.filter((item) => item !== value));
+    } else {
+      onChange([...selectedValues, value]);
     }
-
-    if (!multiple && value != null) {
-      const selectedOption = options.find((option) => option.value === value);
-      return selectedOption ? [selectedOption.label] : [];
-    }
-
-    return [];
-  }, [multiple, options, value]);
-
-  const displayText = useMemo(() => {
-    if (multiple) {
-      return selectedLabels.length > 0
-        ? selectedLabels.join(", ")
-        : placeholder;
-    }
-
-    return selectedLabels[0] ?? placeholder;
-  }, [multiple, placeholder, selectedLabels]);
-
-  const toggleOption = (optionValue: T) => {
-    if (multiple) {
-      const currentValues = Array.isArray(value) ? value : [];
-      const nextValues = currentValues.includes(optionValue)
-        ? currentValues.filter((item) => item !== optionValue)
-        : [...currentValues, optionValue];
-
-      onChange(nextValues);
-      return;
-    }
-
-    onChange(optionValue);
-    setIsOpen(false);
-  };
-
-  const isOptionSelected = (optionValue: T) => {
-    if (multiple && Array.isArray(value)) {
-      return value.includes(optionValue);
-    }
-
-    return !multiple && value === optionValue;
   };
 
   return (
-    <div ref={dropdownRef} className={`custom-dropdown ${className}`.trim()}>
+    <div className="custom-dropdown">
       <button
         type="button"
         className="custom-dropdown__trigger"
@@ -102,7 +48,7 @@ const CustomDropdown = <T extends string | number>({
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <span className="custom-dropdown__trigger-text">{displayText}</span>
+        <span className="custom-dropdown__trigger-text">{buttonText}</span>
         <span className="custom-dropdown__arrow">{isOpen ? "▴" : "▾"}</span>
       </button>
 
@@ -110,14 +56,14 @@ const CustomDropdown = <T extends string | number>({
         <div className="custom-dropdown__menu" role="listbox">
           {options.length > 0 ? (
             options.map((option) => {
-              const selected = isOptionSelected(option.value);
+              const selected = selectedValues.includes(option.value);
 
               return (
                 <button
                   key={String(option.value)}
                   type="button"
                   className={`custom-dropdown__option ${selected ? "is-selected" : ""}`.trim()}
-                  onClick={() => toggleOption(option.value)}
+                  onClick={() => handleOptionClick(option.value)}
                 >
                   <span className="custom-dropdown__check">
                     {selected ? "✓" : "○"}
