@@ -88,6 +88,12 @@ body {
   justify-content: center;
 }
 
+.search-bar {
+  position: relative;
+  display: flex;
+  width: min(100%, 520px);
+}
+
 .nav-search input {
   width: 420px;
   height: 40px;
@@ -100,11 +106,75 @@ body {
 
   padding: 0 16px;
 
-  border-radius: 4px;
+  border-radius: 4px 0 0 4px;
 }
 
 .nav-search input::placeholder {
   color: #666;
+}
+
+.search-bar button[type="submit"] {
+  height: 40px;
+  border: 0;
+  border-radius: 0 4px 4px 0;
+  padding: 0 16px;
+  background: #ff1464;
+  color: white;
+  cursor: pointer;
+}
+
+.search-bar button[type="submit"]:hover {
+  background: #e90050;
+}
+
+.search-suggestions {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  border: 1px solid #353535;
+  border-radius: 6px;
+  background: #222;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 54px;
+  padding: 7px 10px;
+  border: 0;
+  border-bottom: 1px solid #303030;
+  background: transparent;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.search-suggestion:last-child {
+  border-bottom: 0;
+}
+
+.search-suggestion:hover {
+  background: #303030;
+}
+
+.search-suggestion img {
+  width: 30px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.search-suggestion-status {
+  margin: 0;
+  padding: 14px;
+  color: #bfbfbf;
+  font-size: 14px;
 }
 
 /* =========================

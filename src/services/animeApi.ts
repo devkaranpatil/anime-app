@@ -43,20 +43,25 @@ function getRetryDelay(error: AxiosError, retries: number) {
 async function requestWithRetry<T>(
   request: () => Promise<T>,
   retries = 3,
+  signal?: AbortSignal,
 ): Promise<T> {
   try {
     return await request();
   } catch (error) {
-    const isTransientFailure = isAxiosError(error)
-      ? error.code === "ECONNABORTED" ||
+    const status = isAxiosError(error) ? error.response?.status : undefined;
+    const isTransientFailure =
+      isAxiosError(error) &&
+      !signal?.aborted &&
+      error.code !== "ERR_CANCELED" &&
+      (error.code === "ECONNABORTED" ||
         error.message.includes("timeout") ||
-        [429, 502, 503, 504].includes(error.response?.status ?? 0)
-      : false;
+        !error.response ||
+        [408, 429, 500, 502, 503, 504].includes(status ?? 0));
 
     if (retries > 0 && isTransientFailure && isAxiosError(error)) {
       const delay = getRetryDelay(error, retries);
       await new Promise((resolve) => setTimeout(resolve, delay));
-      return requestWithRetry(request, retries - 1);
+      return requestWithRetry(request, retries - 1, signal);
     }
 
     throw error;
@@ -71,9 +76,13 @@ export function getApiErrorMessage(error: unknown): string {
 
     if (
       error.response?.status &&
-      [502, 503, 504].includes(error.response.status)
+      [500, 502, 503, 504].includes(error.response.status)
     ) {
       return "The anime service is temporarily unavailable. Please try again shortly.";
+    }
+
+    if (error.response?.status === 429) {
+      return "The anime service is busy. Please wait a moment and try again.";
     }
 
     if (error.response?.status === 404) {
@@ -109,7 +118,7 @@ export async function getAnimeTypes(): Promise<AnimeTypeOption[]> {
     }));
 
     return fetchedTypes.length > 0 ? fetchedTypes : defaultAnimeTypeOptions;
-  } catch (error) {
+  } catch {
     return defaultAnimeTypeOptions;
   }
 }
@@ -134,15 +143,20 @@ export async function searchAnime(
   query: string,
   page = 1,
   limit = 25,
+  signal?: AbortSignal,
 ): Promise<PaginatedResponse<Anime>> {
-  const response = await requestWithRetry(() =>
-    api.get<PaginatedResponse<Anime>>("/anime", {
-      params: {
-        q: query,
-        page,
-        limit,
-      },
-    }),
+  const response = await requestWithRetry(
+    () =>
+      api.get<PaginatedResponse<Anime>>("/anime", {
+        params: {
+          q: query,
+          page,
+          limit,
+        },
+        signal,
+      }),
+    3,
+    signal,
   );
 
   return response.data;

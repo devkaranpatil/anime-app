@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { SearchProvider } from "./context/SearchContext";
+import { SearchProvider, useSearch } from "./context/SearchContext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import MainLayout from "./layout/MainLayout";
@@ -9,13 +9,19 @@ import Favorites from "./pages/Favorite";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 
+const HomeRoute = () => {
+  const { searchRequestId } = useSearch();
+
+  return <Home key={searchRequestId} />;
+};
+
 function App() {
   return (
-    <SearchProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <SearchProvider>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route index element={<Home />} />
+            <Route index element={<HomeRoute />} />
             <Route path="anime/:id" element={<AnimeDetails />} />
             <Route
               path="anime/:id/episode/:episode"
@@ -25,8 +31,8 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
-      </BrowserRouter>
-    </SearchProvider>
+      </SearchProvider>
+    </BrowserRouter>
   );
 }
 

@@ -28,22 +28,11 @@ const Home = () => {
     setPage(1);
   };
 
-  const { search } = useSearch();
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const { submittedSearch } = useSearch();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
+    const controller = new AbortController();
 
-    return () => clearTimeout(timer);
-  }, [search]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch]);
-
-  useEffect(() => {
     async function fetchAnime() {
       setLoading(true);
       setError("");
@@ -51,8 +40,13 @@ const Home = () => {
       try {
         let response;
 
-        if (debouncedSearch.trim()) {
-          response = await searchAnime(debouncedSearch, page, limit);
+        if (submittedSearch) {
+          response = await searchAnime(
+            submittedSearch,
+            page,
+            limit,
+            controller.signal,
+          );
         } else {
           response = await getTopAnime(page, limit);
           if (page === 1) {
@@ -60,17 +54,25 @@ const Home = () => {
           }
         }
 
-        setAnime(response.data);
-        setLastPage(response.pagination.last_visible_page);
+        if (!controller.signal.aborted) {
+          setAnime(response.data);
+          setLastPage(response.pagination.last_visible_page);
+        }
       } catch (error) {
-        setError(getApiErrorMessage(error));
+        if (!controller.signal.aborted) {
+          setError(getApiErrorMessage(error));
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     }
 
     fetchAnime();
-  }, [page, limit, debouncedSearch]);
+
+    return () => controller.abort();
+  }, [page, limit, submittedSearch]);
 
   useEffect(() => {
     window.scrollTo({
@@ -88,6 +90,10 @@ const Home = () => {
       {loading && <p>Loading...</p>}
 
       {error && <p>{error}</p>}
+
+      {!loading && !error && submittedSearch && anime.length === 0 && (
+        <p>No anime matched “{submittedSearch}”. Try a different title.</p>
+      )}
 
       {!loading && !error && (
         <>
