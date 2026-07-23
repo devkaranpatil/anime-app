@@ -10,6 +10,7 @@ import Pagination from "../components/Pagination/Pagination";
 import HeroCarousel from "../components/HeroCarousel/HeroCarousel";
 import FilterBar from "../components/FilterBar/FilterBar";
 import { useSearch } from "../context/SearchContext";
+import { defaultAnimeFilters, type AnimeFilters } from "../types/filter";
 import "../styles/HeroCarousel.css";
 
 const Home = () => {
@@ -21,6 +22,7 @@ const Home = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(25);
   const [lastPage, setLastPage] = useState(1);
+  const [filters, setFilters] = useState<AnimeFilters>(defaultAnimeFilters);
 
   const heroAnime = featuredAnime.slice(0, 5);
   const handleLimitChange = (newLimit: number) => {
@@ -43,6 +45,14 @@ const Home = () => {
     setPage(1);
   }, [debouncedSearch]);
 
+  const handleFiltersChange = (nextFilters: AnimeFilters) => {
+    setFilters(nextFilters);
+    setPage(1);
+  };
+
+  const hasActiveFilters =
+    filters.genres.length > 0 || filters.type !== "all";
+
   useEffect(() => {
     async function fetchAnime() {
       setLoading(true);
@@ -51,8 +61,8 @@ const Home = () => {
       try {
         let response;
 
-        if (debouncedSearch.trim()) {
-          response = await searchAnime(debouncedSearch, page, limit);
+        if (debouncedSearch.trim() || hasActiveFilters) {
+          response = await searchAnime(debouncedSearch, page, limit, filters);
         } else {
           response = await getTopAnime(page, limit);
           if (page === 1) {
@@ -70,7 +80,7 @@ const Home = () => {
     }
 
     fetchAnime();
-  }, [page, limit, debouncedSearch]);
+  }, [page, limit, debouncedSearch, filters, hasActiveFilters]);
 
   useEffect(() => {
     window.scrollTo({
@@ -81,7 +91,7 @@ const Home = () => {
 
   return (
     <section>
-      {!loading && !error && heroAnime.length > 0 && (
+      {!loading && !error && !debouncedSearch.trim() && !hasActiveFilters && heroAnime.length > 0 && (
         <HeroCarousel anime={heroAnime} />
       )}
 
@@ -91,7 +101,7 @@ const Home = () => {
 
       {!loading && !error && (
         <>
-          <FilterBar />
+          <FilterBar filters={filters} onFiltersChange={handleFiltersChange} />
           <AnimeGrid anime={anime} />
 
           <Pagination

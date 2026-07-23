@@ -4,13 +4,9 @@ import type {
   AnimeGenresResponse,
   PaginatedResponse,
 } from "../types/anime";
-import {
-  defaultAnimeTypeOptions,
-  type AnimeTypeOption,
-  type AnimeTypeValue,
-} from "../types/animeTypes";
 import type { Episode, EpisodeDetail, StreamingLink } from "../types/episode";
 import type { VideoData } from "../types/video";
+import type { AnimeFilters } from "../types/filter";
 
 const api = axios.create({
   baseURL: "https://api.jikan.moe/v4",
@@ -97,23 +93,6 @@ export async function getAnimeGenres(): Promise<AnimeGenresResponse["data"]> {
   return response.data.data;
 }
 
-export async function getAnimeTypes(): Promise<AnimeTypeOption[]> {
-  try {
-    const response = await requestWithRetry(() =>
-      api.get<{ data: Array<{ type: AnimeTypeValue }> }>("/meta/anime/types"),
-    );
-
-    const fetchedTypes = (response.data.data ?? []).map((item) => ({
-      value: item.type,
-      label: item.type.toUpperCase(),
-    }));
-
-    return fetchedTypes.length > 0 ? fetchedTypes : defaultAnimeTypeOptions;
-  } catch (error) {
-    return defaultAnimeTypeOptions;
-  }
-}
-
 export async function getTopAnime(
   page = 1,
   limit = 24,
@@ -134,13 +113,19 @@ export async function searchAnime(
   query: string,
   page = 1,
   limit = 25,
+  filters?: AnimeFilters,
 ): Promise<PaginatedResponse<Anime>> {
+  const hasQuery = Boolean(query.trim());
   const response = await requestWithRetry(() =>
     api.get<PaginatedResponse<Anime>>("/anime", {
       params: {
-        q: query,
+        q: hasQuery ? query : undefined,
         page,
         limit,
+        genres: filters?.genres.length ? filters.genres.join(",") : undefined,
+        type: filters?.type !== "all" ? filters?.type : undefined,
+        order_by: hasQuery ? undefined : "popularity",
+        sort: hasQuery ? undefined : "asc",
       },
     }),
   );

@@ -13,6 +13,7 @@ interface CustomDropdownProps {
   placeholder?: string;
   disabled?: boolean;
   emptyMessage?: string;
+  multiple?: boolean;
 }
 
 const CustomDropdown = ({
@@ -22,6 +23,7 @@ const CustomDropdown = ({
   placeholder = "Select an option",
   disabled = false,
   emptyMessage = "No options available.",
+  multiple = true,
 }: CustomDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -31,6 +33,12 @@ const CustomDropdown = ({
   const buttonText = labels.length > 0 ? labels.join(", ") : placeholder;
 
   const handleOptionClick = (value: string | number) => {
+    if (!multiple) {
+      onChange([value]);
+      setIsOpen(false);
+      return;
+    }
+
     if (selectedValues.includes(value)) {
       onChange(selectedValues.filter((item) => item !== value));
     } else {

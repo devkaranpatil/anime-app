@@ -1,13 +1,11 @@
-export interface AnimeTypeOption {
-  label: string;
-  value: string;
+import type { AnimeTypeValue } from "./animeTypes";
+
+export interface AnimeFilters {
+  genres: number[];
+  type: AnimeTypeValue;
 }
 
-export interface GenreOption {
-  mal_id: number;
-  name: string;
-}
-
-export interface AnimeGenresResponse {
-  data: GenreOption[];
-}
+export const defaultAnimeFilters: AnimeFilters = {
+  genres: [],
+  type: "all",
+};

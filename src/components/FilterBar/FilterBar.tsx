@@ -2,32 +2,26 @@ import { useEffect, useState } from "react";
 import CustomDropdown, {
   type DropdownOption,
 } from "../CustomDropdown/CustomDropdown";
-import { getAnimeGenres, getAnimeTypes } from "../../services/animeApi";
+import { getAnimeGenres } from "../../services/animeApi";
 import type { AnimeGenre } from "../../types/anime";
 import {
   defaultAnimeTypeOptions,
   getAnimeTypeLabel,
-  type AnimeTypeOption,
   type AnimeTypeValue,
 } from "../../types/animeTypes";
+import type { AnimeFilters } from "../../types/filter";
 import "../../styles/FilterBar.css";
 
-const FilterBar = () => {
+interface FilterBarProps {
+  filters: AnimeFilters;
+  onFiltersChange: (filters: AnimeFilters) => void;
+}
+
+const FilterBar = ({ filters, onFiltersChange }: FilterBarProps) => {
   const [genres, setGenres] = useState<AnimeGenre[]>([]);
-  const [selectedGenres, setSelectedGenres] = useState<Array<string | number>>(
-    [],
-  );
-  const [selectedTypes, setSelectedTypes] = useState<Array<string | number>>([
-    "all",
-  ]);
   const [isExpanded, setIsExpanded] = useState(true);
   const [loadingGenres, setLoadingGenres] = useState(true);
   const [genreError, setGenreError] = useState("");
-  const [animeTypeOptions, setAnimeTypeOptions] = useState<AnimeTypeOption[]>(
-    defaultAnimeTypeOptions,
-  );
-  const [loadingTypes, setLoadingTypes] = useState(true);
-  const [typeError, setTypeError] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -52,28 +46,7 @@ const FilterBar = () => {
       }
     }
 
-    async function loadTypes() {
-      try {
-        setLoadingTypes(true);
-        setTypeError("");
-        const fetchedTypes = await getAnimeTypes();
-
-        if (isMounted) {
-          setAnimeTypeOptions(fetchedTypes);
-        }
-      } catch {
-        if (isMounted) {
-          setTypeError("Unable to load anime types right now.");
-        }
-      } finally {
-        if (isMounted) {
-          setLoadingTypes(false);
-        }
-      }
-    }
-
     loadGenres();
-    loadTypes();
 
     return () => {
       isMounted = false;
@@ -85,9 +58,17 @@ const FilterBar = () => {
     label: genre.name,
   }));
 
-  const selectedTypeLabels = selectedTypes
-    .map((type) => getAnimeTypeLabel(type as AnimeTypeValue))
-    .join(", ");
+  const handleGenresChange = (values: Array<string | number>) => {
+    onFiltersChange({
+      ...filters,
+      genres: values.filter((value): value is number => typeof value === "number"),
+    });
+  };
+
+  const handleTypeChange = (values: Array<string | number>) => {
+    const type = values[0] as AnimeTypeValue | undefined;
+    onFiltersChange({ ...filters, type: type ?? "all" });
+  };
 
   return (
     <section className="filter-bar" aria-label="Anime filters">
@@ -111,8 +92,8 @@ const FilterBar = () => {
             <h3>Genres</h3>
             <CustomDropdown
               options={genreOptions}
-              selectedValues={selectedGenres}
-              onChange={setSelectedGenres}
+              selectedValues={filters.genres}
+              onChange={handleGenresChange}
               placeholder="Select genres"
               disabled={loadingGenres || Boolean(genreError)}
               emptyMessage={
@@ -126,22 +107,17 @@ const FilterBar = () => {
           <div className="filter-bar__section">
             <h3>Anime type</h3>
             <CustomDropdown
-              options={animeTypeOptions}
-              selectedValues={selectedTypes}
-              onChange={setSelectedTypes}
+              options={defaultAnimeTypeOptions}
+              selectedValues={[filters.type]}
+              onChange={handleTypeChange}
               placeholder="All types"
-              disabled={loadingTypes}
-              emptyMessage={
-                loadingTypes
-                  ? "Loading anime types..."
-                  : typeError || "No anime types available."
-              }
+              multiple={false}
             />
           </div>
 
           <div className="filter-bar__summary">
-            <span>{selectedGenres.length} genre selected</span>
-            <span>Type: {selectedTypeLabels || "All types"}</span>
+            <span>{filters.genres.length} genre selected</span>
+            <span>Type: {getAnimeTypeLabel(filters.type)}</span>
           </div>
         </div>
       )}

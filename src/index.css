@@ -11,6 +11,19 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
+  --anime-surface: rgba(17, 24, 39, 0.92);
+  --anime-surface-raised: rgba(17, 24, 39, 0.98);
+  --anime-control: rgba(255, 255, 255, 0.06);
+  --anime-border: rgba(255, 255, 255, 0.12);
+  --anime-border-subtle: rgba(255, 255, 255, 0.08);
+  --anime-text-strong: #f9fafb;
+  --anime-text: #e5e7eb;
+  --anime-text-muted: #9ca3af;
+  --anime-accent: #f59e0b;
+  --anime-accent-strong: #fbbf24;
+  --anime-radius: 14px;
+  --anime-transition: 0.2s ease;
+
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
